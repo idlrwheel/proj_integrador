@@ -1,6 +1,6 @@
 package com.example;
-import java.util.Scanner;
 
+import java.util.Scanner;
 import com.example.classes.Menu;
 import com.example.dao.UsuarioDAO;
 import com.example.models.Usuario;
@@ -17,12 +17,11 @@ public class BackofficeMain {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         Usuario usuario = usuarioDAO.validarLogin(email, senha);
 
-        
         if(usuario != null){
             System.out.println("Login bem-sucedido! Bem-vindo, " + usuario.getEmail());
-            Menu.exibirMenu(usuario);
+            Menu.exibirMenu(usuario); // Chamando o menu
         } else{
-            System.out.println("<< Nao foi possível identificar o usuario, tente novamente>>");
+            System.out.println("<< Não foi possível identificar o usuário, tente novamente >>");
         }
-}
+    }
 }
