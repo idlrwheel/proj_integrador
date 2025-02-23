@@ -4,11 +4,13 @@ public class Usuario {
     private String email;
     private String grupo;
     private String status;
+    private String nome; // Nome foi adicionado ao modelo para poder ser usado
 
-    public Usuario(String email, String grupo, String status) {
+    public Usuario(String email, String grupo, String status, String nome) {
         this.email = email;
         this.grupo = grupo;
         this.status = status;
+        this.nome = nome; // Inicializando o nome
     }
 
     public String getEmail() {
@@ -23,4 +25,7 @@ public class Usuario {
         return status;
     }
 
+    public String getNome() {
+        return nome; // Método getter para o nome
+    }
 }
