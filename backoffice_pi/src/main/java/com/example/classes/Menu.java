@@ -7,11 +7,11 @@ import com.example.models.Usuario;
 public class Menu {
     public static void exibirMenu(Usuario usuario){
         Scanner sc = new Scanner(System.in);
-        System.out.println("1. Listar produtos");
+        System.out.println("1) Listar produtos");
         if("adm".equals(usuario.getGrupo())){
-            System.out.println("2. Listar usuários");
+            System.out.println("2) Listar usuários");
         }
-        System.out.println("Escolha uma opção :");
+        System.out.println("Entre com a opção (1 ou 2)");
         int opc = sc.nextInt();
 
             switch(opc){
