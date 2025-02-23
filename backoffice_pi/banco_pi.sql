@@ -3,20 +3,19 @@ USE ecommerce_pi;
 CREATE TABLE userBackoffice(
 id INT auto_increment PRIMARY KEY,
 email VARCHAR(300) NOT NULL UNIQUE,
-senha VARCHAR(50) NOT NULL,
-tipoUser ENUM('adm', 'estoquista') NOT NULL
+senha VARCHAR(100) NOT NULL,
+tipoUser ENUM('adm', 'estoquista', 'cliente') NOT NULL,
+status ENUM('ativado', 'desativado') NOT NULL,
+nome VARCHAR(100),
+cpf char(11)
 );
 INSERT INTO userBackoffice (email, senha, tipoUser) VALUES
 ('adm@exemplo.com', 'senha123', 'adm');
 
-ALTER TABLE userBackoffice ADD status ENUM('ativado', 'desativado') NOT NULL;
-
 INSERT INTO userBackoffice (email, senha, tipoUser, status) VALUES 
 ('teste@teste.com', 'senha123', 'adm', 'ativado');
 
-ALTER TABLE userBackoffice MODIFY COLUMN senha VARCHAR(100);
 
-ALTER TABLE userBackoffice MODIFY column tipoUser ENUM('adm', 'estoquista', 'cliente');
 
 UPDATE userBackoffice SET senha = 'senha123' WHERE email = 'teste@teste.com';
 SELECT senha FROM userBackoffice WHERE email = 'teste@teste.com';
