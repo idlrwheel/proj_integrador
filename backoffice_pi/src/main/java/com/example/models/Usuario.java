@@ -5,12 +5,14 @@ public class Usuario {
     private String grupo;
     private String status;
     private String nome; // Nome foi adicionado ao modelo para poder ser usado
+    private String cpf;
 
-    public Usuario(String email, String grupo, String status, String nome) {
+    public Usuario(String email, String grupo, String status, String nome, String cpf) {
         this.email = email;
         this.grupo = grupo;
         this.status = status;
         this.nome = nome; // Inicializando o nome
+        this.cpf = cpf;
     }
 
     public String getEmail() {
@@ -27,5 +29,8 @@ public class Usuario {
 
     public String getNome() {
         return nome; // Método getter para o nome
+    }
+    public String getCPF(){
+        return cpf;
     }
 }
