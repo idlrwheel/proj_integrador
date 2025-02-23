@@ -1,0 +1,30 @@
+CREATE database ecommerce_pi;
+USE ecommerce_pi;
+CREATE TABLE userBackoffice(
+id INT auto_increment PRIMARY KEY,
+email VARCHAR(300) NOT NULL UNIQUE,
+senha VARCHAR(50) NOT NULL,
+tipoUser ENUM('adm', 'estoquista') NOT NULL
+);
+INSERT INTO userBackoffice (email, senha, tipoUser) VALUES
+('adm@exemplo.com', 'senha123', 'adm');
+
+ALTER TABLE userBackoffice ADD status ENUM('ativado', 'desativado') NOT NULL;
+
+INSERT INTO userBackoffice (email, senha, tipoUser, status) VALUES 
+('teste@teste.com', 'senha123', 'adm', 'ativado');
+
+ALTER TABLE userBackoffice MODIFY COLUMN senha VARCHAR(100);
+
+ALTER TABLE userBackoffice MODIFY column tipoUser ENUM('adm', 'estoquista', 'cliente');
+
+UPDATE userBackoffice SET senha = 'senha123' WHERE email = 'teste@teste.com';
+SELECT senha FROM userBackoffice WHERE email = 'teste@teste.com';
+UPDATE userBackoffice SET senha = '55a5e9e78207b4df8699d60886fa070079463547b095d1a05bc719bb4e6cd251' WHERE email = 'teste@teste.com';
+
+INSERT INTO userBackoffice (email, senha, tipoUser, status) VALUES 
+('estoque@teste.com', 'senha321', 'estoquista', 'ativado');
+UPDATE userBackoffice SET senha = '2288821c6b799cf47a8c9aa231f361ffb906bbee0d5fb5e1767509e27442cc62' WHERE email = 'estoque@teste.com';
+INSERT INTO userBackoffice (email, senha, tipoUser, status) VALUES 
+('cliente@teste.com', 'senha321', 'cliente', 'ativado');
+UPDATE userBackoffice SET senha = '2288821c6b799cf47a8c9aa231f361ffb906bbee0d5fb5e1767509e27442cc62' WHERE email = 'cliente@teste.com';
