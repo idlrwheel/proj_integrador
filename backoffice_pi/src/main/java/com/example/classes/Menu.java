@@ -64,13 +64,18 @@ public class Menu {
             int idEscolhido = Integer.parseInt(opcao);
             // Realizar a ação com o usuário escolhido
             Usuario usuarioEscolhido = usuarios.get(idEscolhido - 1); // Pega o usuário baseado no ID
-            System.out.println("Usuário selecionado: " + usuarioEscolhido.getNome());
+            System.out.println("Usuário selecionado: " + usuarioEscolhido.getId() + ", " + usuarioEscolhido.getNome() +
+            ", " + usuarioEscolhido.getCPF() + ", " + usuarioEscolhido.getEmail() + ", " + usuarioEscolhido.getStatus() + ", " + usuarioEscolhido.getGrupo());
 
             // Mostrar opções de ações para o usuário escolhido
-            System.out.println("O que você deseja fazer?");
-            System.out.println("1) Alterar usuário");
-            System.out.println("2) Habilitar/Desabilitar status");
-            System.out.println("3) Voltar");
+            System.out.println("Opções :");
+            System.out.println("""
+                               1) Alterar usuario
+                               2) Alterar senha 
+                               3) Habilitar/Desabilitar status 
+                               4) Voltar
+                               """);
+            
 
             int acao = sc.nextInt();
             switch (acao) {
@@ -78,15 +83,16 @@ public class Menu {
                     alterarUsuario(usuarioEscolhido);
                     break;
                 case 2:
+                     alterarSenha(usuarioEscolhido);
+                case 3:
                     habilitarDesabilitar(usuarioEscolhido);
                     break;
-                case 3:
+                case 4:
                     System.out.println("Voltando...");
-                    exibirMenu(usuarioEscolhido);
+                    listarUsuarios(usuarioEscolhido);
                 default:
                     System.out.println("Opção inválida");
             }
-        }
     }
 
     // Método para alterar um usuário
