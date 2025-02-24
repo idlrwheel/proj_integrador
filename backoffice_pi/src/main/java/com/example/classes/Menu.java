@@ -113,11 +113,13 @@ public static void alterarUsuario(Usuario usuario) {
         usuario.setCpf(novoCpf);
     }
     
-    System.out.println("Novo E-mail (deixe em branco para manter o atual): ");
+
+    //Comentado para não aparecer opção de alterar e-mail. 
+   /* System.out.println("Novo E-mail (deixe em branco para manter o atual): ");
     String novoEmail = sc.nextLine();
     if (!novoEmail.trim().isEmpty()) {
-        usuario.setEmail(novoEmail);
-    }
+        usuario.setEmail(novoEmail); 
+    }*/
     
     System.out.println("Novo Grupo (Adm/Estoquista) (deixe em branco para manter o atual): ");
     String novoGrupo = sc.nextLine();
@@ -169,11 +171,31 @@ public static void alterarSenha(Usuario usuario) {
     }
 }
 
-    // Método para habilitar/desabilitar o status de um usuário
-    public static void habilitarDesabilitar(Usuario usuario) {
-        System.out.println("Status atual do usuário: " + usuario.getStatus());
-        // Lógica para habilitar/desabilitar
+ // Método para habilitar/desabilitar o status de um usuário
+public static void habilitarDesabilitar(Usuario usuario) {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("Status atual do usuário: " + usuario.getStatus());
+    System.out.println("Deseja alterar o status? (S/N): ");
+    String resposta = sc.nextLine();
+
+    if ("S".equalsIgnoreCase(resposta)) {
+        // Alterna o status
+        String novoStatus = usuario.getStatus().equalsIgnoreCase("Ativado") ? "Desativado" : "Ativado";
+        usuario.setStatus(novoStatus);
+
+        // Atualiza no banco de dados
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        usuarioDAO.alterarUsuario(usuario);
+
+        System.out.println("Status atualizado para: " + novoStatus);
+    } else {
+        System.out.println("Operação cancelada.");
     }
+
+    listarUsuarios(usuario); // Retorna para a lista de usuários
+}
+    
 
     private static void incluirUsuario(Usuario usuarioLogado) {
         Scanner sc = new Scanner(System.in);

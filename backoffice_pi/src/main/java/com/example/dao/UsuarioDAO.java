@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 import com.example.models.Usuario;
 
 public class UsuarioDAO {
-    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/ecommerce_pi";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Sd.iago12";
+    private static final String DB_PASSWORD = "58725997";
 
     public Usuario validarLogin(String email, String senha) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
@@ -150,31 +150,48 @@ public class UsuarioDAO {
            return "Usuario cadastrado com sucesso!";
         }  
     }
-public void alterarUsuario(Usuario usuario) {
-    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-        connection.setAutoCommit(false); // Desabilitar o auto-commit
-
-        String sql = "UPDATE userBackoffice SET nome = ?, cpf = ?, email = ?, tipoUser = ?, status = ? WHERE email = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, usuario.getNome());
-        statement.setString(2, usuario.getCpf());
-        statement.setString(3, usuario.getEmail());
-        statement.setString(4, usuario.getSenha());
-        statement.setString(5, usuario.getStatus());
-        statement.setString(6, usuario.getEmail());
-
-        int rowsUpdated = statement.executeUpdate();
-        if (rowsUpdated > 0) {
-            System.out.println("Usuário atualizado com sucesso.");
-            connection.commit(); // Realizar o commit
-        } else {
-            System.out.println("Nenhum usuário encontrado com o e-mail fornecido.");
-            connection.rollback(); // Reverter as alterações em caso de falha
+    public void alterarUsuario(Usuario usuario) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            connection.setAutoCommit(false); // Desabilitar o auto-commit
+    
+            String sql = "UPDATE userBackoffice SET nome = ?, cpf = ?, email = ?, tipoUser = ?, status = ? WHERE email = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, usuario.getNome());
+            statement.setString(2, usuario.getCpf());
+            statement.setString(3, usuario.getEmail());
+    
+            // Garantir que o tipoUser seja válido
+            String tipoUser = usuario.getGrupo().toLowerCase().trim();
+            if (!tipoUser.equals("adm") && !tipoUser.equals("estoquista") && !tipoUser.equals("cliente")) {
+                System.out.println("Erro: tipoUser inválido! Apenas 'adm', 'estoquista' ou 'cliente' são permitidos.");
+                return;
+            }
+            statement.setString(4, tipoUser);
+    
+            // Garantir que o status seja válido
+            String status = usuario.getStatus().toLowerCase().trim();
+            if (!status.equals("ativado") && !status.equals("desativado")) {
+                System.out.println("Erro: status inválido! Apenas 'ativado' ou 'desativado' são permitidos.");
+                return;
+            }
+            statement.setString(5, status);
+    
+            statement.setString(6, usuario.getEmail()); // Filtramos pelo e-mail
+    
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Usuário atualizado com sucesso.");
+                connection.commit(); // Realizar o commit
+            } else {
+                System.out.println("Nenhum usuário encontrado com o e-mail fornecido.");
+                connection.rollback(); // Reverter as alterações em caso de falha
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
+    
+
 public void alterarSenha(String email, String novaSenha) {
     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
         connection.setAutoCommit(false); // Desabilitar o auto-commit
