@@ -65,7 +65,7 @@ public class Menu {
             // Realizar a ação com o usuário escolhido
             Usuario usuarioEscolhido = usuarios.get(idEscolhido - 1); // Pega o usuário baseado no ID
             System.out.println("Usuário selecionado: " + usuarioEscolhido.getId() + ", " + usuarioEscolhido.getNome() +
-            ", " + usuarioEscolhido.getCPF() + ", " + usuarioEscolhido.getEmail() + ", " + usuarioEscolhido.getStatus() + ", " + usuarioEscolhido.getGrupo());
+            ", " + usuarioEscolhido.getCpf() + ", " + usuarioEscolhido.getEmail() + ", " + usuarioEscolhido.getStatus() + ", " + usuarioEscolhido.getGrupo());
 
             // Mostrar opções de ações para o usuário escolhido
             System.out.println("Opções :");
@@ -94,12 +94,80 @@ public class Menu {
                     System.out.println("Opção inválida");
             }
     }
-
-    // Método para alterar um usuário
-    public static void alterarUsuario(Usuario usuario) {
-        System.out.println("Alterando usuário: " + usuario.getNome());
-        // Adicione a lógica para alterar os dados do usuário
     }
+    // Método para alterar um usuário
+public static void alterarUsuario(Usuario usuario) {
+    Scanner sc = new Scanner(System.in);
+    
+    System.out.println("Alterando usuário: " + usuario.getNome());
+    
+    System.out.println("Novo nome (deixe em branco para manter o atual): ");
+    String novoNome = sc.nextLine();
+    if (!novoNome.trim().isEmpty()) {
+        usuario.setNome(novoNome);
+    }
+    
+    System.out.println("Novo CPF (deixe em branco para manter o atual): ");
+    String novoCpf = sc.nextLine();
+    if (!novoCpf.trim().isEmpty()) {
+        usuario.setCpf(novoCpf);
+    }
+    
+    System.out.println("Novo E-mail (deixe em branco para manter o atual): ");
+    String novoEmail = sc.nextLine();
+    if (!novoEmail.trim().isEmpty()) {
+        usuario.setEmail(novoEmail);
+    }
+    
+    System.out.println("Novo Grupo (Adm/Estoquista) (deixe em branco para manter o atual): ");
+    String novoGrupo = sc.nextLine();
+    if (!novoGrupo.trim().isEmpty()) {
+        usuario.setGrupo(novoGrupo);
+    }
+    
+    System.out.println("Novo Status (Ativado/Desativado) (deixe em branco para manter o atual): ");
+    String novoStatus = sc.nextLine();
+    if (!novoStatus.trim().isEmpty()) {
+        usuario.setStatus(novoStatus);
+    }
+
+    UsuarioDAO usuarioDAO = new UsuarioDAO();
+    usuarioDAO.alterarUsuario(usuario);
+
+    System.out.println("Usuário atualizado com sucesso!");
+    listarUsuarios(usuario); // Volta para a lista de usuários
+}
+
+public static void alterarSenha(Usuario usuario) {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("Alterando senha do usuário: " + usuario.getNome());
+
+    System.out.println("Digite a nova senha: ");
+    String novaSenha = sc.nextLine();
+
+    System.out.println("Digite a nova senha novamente: ");
+    String confirmarSenha = sc.nextLine();
+
+    if (!novaSenha.equals(confirmarSenha)) {
+        System.out.println("As senhas não coincidem. Tente novamente.");
+        alterarSenha(usuario);
+        return;
+    }
+
+    UsuarioDAO usuarioDAO = new UsuarioDAO();
+    try {
+        String senhaCripto = usuarioDAO.encriptarSenha(novaSenha);
+        usuario.setSenha(senhaCripto);  // Adicione o método setSenha na classe Usuario
+
+        usuarioDAO.alterarSenha(usuario.getEmail(), senhaCripto);
+
+        System.out.println("Senha atualizada com sucesso!");
+    } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+        System.out.println("Erro ao encriptar a senha.");
+    }
+}
 
     // Método para habilitar/desabilitar o status de um usuário
     public static void habilitarDesabilitar(Usuario usuario) {
