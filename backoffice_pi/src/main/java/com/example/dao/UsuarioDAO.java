@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 import com.example.models.Usuario;
 
 public class UsuarioDAO {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
+    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Password0108!";
+    private static final String DB_PASSWORD = "Sd.iago12";
 
     public Usuario validarLogin(String email, String senha) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
@@ -41,7 +41,7 @@ public class UsuarioDAO {
 
                 if (encriptarSenha(senha).equals(senhaHash)) {
                     System.out.println("Senhas coincidem. Login bem-sucedido.");
-                    return new Usuario(email, grupo, status, nome, cpf);
+                    return new Usuario(email, grupo, status, nome, cpf, senha);
                 } else {
                     System.out.println("Senha incorreta!");
                 }
@@ -54,7 +54,7 @@ public class UsuarioDAO {
         return null;
     }
 
-    private String encriptarSenha(String senha) throws NoSuchAlgorithmException {
+    public String encriptarSenha(String senha) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(senha.getBytes());
         byte[] bytes = md.digest();
@@ -80,8 +80,9 @@ public class UsuarioDAO {
                 String status = rs.getString("status");
                 String nome = rs.getString("nome");
                 String cpf = rs.getString("cpf");
+                String senha = rs.getString("senha");
                 // Adicionando o usuário à lista
-                usuarios.add(new Usuario(email, grupo, status, nome, cpf));
+                usuarios.add(new Usuario(email, grupo, status, nome, cpf, senha));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,4 +150,50 @@ public class UsuarioDAO {
            return "Usuario cadastrado com sucesso!";
         }  
     }
+public void alterarUsuario(Usuario usuario) {
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        connection.setAutoCommit(false); // Desabilitar o auto-commit
+
+        String sql = "UPDATE userBackoffice SET nome = ?, cpf = ?, email = ?, tipoUser = ?, status = ? WHERE email = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, usuario.getNome());
+        statement.setString(2, usuario.getCpf());
+        statement.setString(3, usuario.getEmail());
+        statement.setString(4, usuario.getSenha());
+        statement.setString(5, usuario.getStatus());
+        statement.setString(6, usuario.getEmail());
+
+        int rowsUpdated = statement.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Usuário atualizado com sucesso.");
+            connection.commit(); // Realizar o commit
+        } else {
+            System.out.println("Nenhum usuário encontrado com o e-mail fornecido.");
+            connection.rollback(); // Reverter as alterações em caso de falha
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+public void alterarSenha(String email, String novaSenha) {
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        connection.setAutoCommit(false); // Desabilitar o auto-commit
+
+        String sql = "UPDATE userBackoffice SET senha = ? WHERE email = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, novaSenha);
+        statement.setString(2, email);
+
+        int rowsUpdated = statement.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Senha atualizada com sucesso.");
+            connection.commit(); // Realizar o commit
+        } else {
+            System.out.println("Nenhum usuário encontrado com o e-mail fornecido.");
+            connection.rollback(); // Reverter as alterações em caso de falha
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
 }
