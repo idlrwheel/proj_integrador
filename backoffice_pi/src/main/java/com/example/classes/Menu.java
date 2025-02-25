@@ -136,7 +136,7 @@ public static void alterarUsuario(Usuario usuario) {
     UsuarioDAO usuarioDAO = new UsuarioDAO();
     usuarioDAO.alterarUsuario(usuario);
 
-    System.out.println("Usuário atualizado com sucesso!");
+   // System.out.println("Usuário atualizado com sucesso!");
     listarUsuarios(usuario); // Volta para a lista de usuários
 }
 
