@@ -27,3 +27,11 @@ UPDATE userBackoffice SET senha = '2288821c6b799cf47a8c9aa231f361ffb906bbee0d5fb
 INSERT INTO userBackoffice (email, senha, tipoUser, status) VALUES 
 ('cliente@teste.com', 'senha321', 'cliente', 'ativado');
 UPDATE userBackoffice SET senha = '2288821c6b799cf47a8c9aa231f361ffb906bbee0d5fb5e1767509e27442cc62' WHERE email = 'cliente@teste.com';
+
+CREATE TABLE produtos(
+codigo INT auto_increment PRIMARY KEY,
+nome varchar(200) NOT NULL,
+avaliacao DECIMAL(2,1) CHECK (avaliacao >= 1 AND avaliacao <= 5),
+descricaoDetalhada varchar(2000) NOT NULL,
+qtdEstoque int NOT NULL,
+valorProduto DECIMAL(10,2) NOT NULL)
