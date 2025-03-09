@@ -34,4 +34,13 @@ nome varchar(200) NOT NULL,
 avaliacao DECIMAL(2,1) CHECK (avaliacao >= 1 AND avaliacao <= 5),
 descricaoDetalhada varchar(2000) NOT NULL,
 qtdEstoque int NOT NULL,
-valorProduto DECIMAL(10,2) NOT NULL)
+valorProduto DECIMAL(10,2) NOT NULL);
+
+CREATE TABLE imagensProduto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produto_id INT NOT NULL,
+    nome_arquivo VARCHAR(255) NOT NULL,
+    diretorio_origem VARCHAR(255) NOT NULL,
+    principal BOOLEAN NOT NULL,
+    FOREIGN KEY (produto_id) REFERENCES produtos(codigo) ON DELETE CASCADE
+);
