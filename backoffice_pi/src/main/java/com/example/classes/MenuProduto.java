@@ -1,4 +1,5 @@
 package com.example.classes;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -39,11 +40,15 @@ public class MenuProduto {
         System.out.println("Incluir produto");
         System.out.println("Nome => ");
         String nome = sc.nextLine();
+        if (nome.length() > 200) {
+            System.out.println("Erro: Nome excede 200 caracteres.");
+            return;
+        }
     
         double avaliacao = 0;
         boolean avaliacaoValida = false;
         while (!avaliacaoValida) {
-            System.out.println("Avaliação (entre 1.0 e 5.0, incrementos de 0.5) => ");
+            System.out.println("Avaliação => ");
             if (sc.hasNextDouble()) {
                 avaliacao = sc.nextDouble();
                 sc.nextLine(); 
@@ -58,13 +63,17 @@ public class MenuProduto {
             }
         }
     
-        System.out.println("Descricao detalhada => ");
+        System.out.println("Descricao detalhada (máx 2000 caracteres) => ");
         String descricaoDetalhada = sc.nextLine();
+        if (descricaoDetalhada.length() > 2000) {
+            System.out.println("Erro: Descrição detalhada excede 2000 caracteres.");
+            return;
+        }
     
         double valorProduto = 0;
         boolean valorValido = false;
         while (!valorValido) {
-            System.out.println("Valor => ");
+            System.out.println("Valor (2 casas decimais) => ");
             if (sc.hasNextDouble()) {
                 valorProduto = sc.nextDouble();
                 valorValido = true;
@@ -89,7 +98,8 @@ public class MenuProduto {
             try {
                 String resultado = produtoDAO.cadastrarProduto(nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status);
                 System.out.println(resultado);
-                listarProdutos();
+                int produtoId = produtoDAO.obterUltimoProdutoId(); 
+                incluirImagem(produtoId); 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -103,6 +113,64 @@ public class MenuProduto {
     private static void editarProduto(int id) {
         
     }
+
+    private static void incluirImagem(int produtoId) throws SQLException {
+        Scanner sc = new Scanner(System.in);
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+        boolean continuar = true;
+    
+        while (continuar) {
+            System.out.println("Incluir imagem do produto");
+            System.out.println("Nome do arquivo => ");
+            String nomeArquivo = sc.nextLine();
+            System.out.println("Diretório de origem => ");
+            String diretorioOrigem = sc.nextLine();
+            System.out.println("É a imagem principal? (Y/N) => ");
+            String imagemPrincipal = sc.nextLine();
+    
+            boolean principal = "Y".equalsIgnoreCase(imagemPrincipal);
+    
+            if (principal) {
+                produtoDAO.atualizarImagemPrincipal(produtoId);
+            }
+    
+            produtoDAO.cadastrarImagemProduto(produtoId, nomeArquivo, diretorioOrigem, principal);
+    
+            System.out.println("Salvar e incluir mais uma imagem (1), Salvar e finalizar (2), Não salvar e finalizar (3) => ");
+            int opcao = sc.nextInt();
+            sc.nextLine(); 
+    
+            switch (opcao) {
+                case 1:
+                    break;
+                case 2:
+                    salvarImagens(produtoId);
+                    listarProdutos();
+                    continuar = false;
+                    break;
+                case 3:
+                    listarProdutos();
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+
+    
+}
+    private static void salvarImagens(int produtoId) {
+            String diretorioDestino = "/imagens/" + produtoId;
+            File diretorio = new File(diretorioDestino);
+            if (!diretorio.exists()) {
+                diretorio.mkdirs();
+            }
+        
+            System.out.println("Imagens salvas com sucesso no diretório: " + diretorioDestino);
+        }
+        
+    }
+
 
     
 }
