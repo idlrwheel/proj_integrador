@@ -1,3 +1,8 @@
+package com.example.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,6 +60,47 @@ public static List<Produto> listarProdutos() {
         e.printStackTrace();
     }
     return produtos;
+    }
+
+    public void cadastrarImagemProduto(int produtoId, String nomeArquivo, String diretorioOrigem, boolean principal) throws SQLException {
+        String sql = "INSERT INTO imagensProduto (produto_id, nome_arquivo, diretorio_origem, principal) VALUES (?, ?, ?, ?)";
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+    
+            statement.setInt(1, produtoId);
+            statement.setString(2, nomeArquivo);
+            statement.setString(3, diretorioOrigem);
+            statement.setBoolean(4, principal);
+    
+            statement.executeUpdate();
+        }
+    }
+
+    public void atualizarImagemPrincipal(int produtoId) throws SQLException {
+        String sql = "UPDATE imagensProduto SET principal = false WHERE produto_id = ?";
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+    
+            statement.setInt(1, produtoId);
+            statement.executeUpdate();
+        }
+    }
+
+    public int obterUltimoProdutoId() throws SQLException {
+        String sql = "SELECT MAX(codigo) AS max_id FROM produtos";
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet rs = statement.executeQuery()) {
+    
+            if (rs.next()) {
+                return rs.getInt("max_id");
+            } else {
+                throw new SQLException("Erro ao obter o ID do último produto inserido.");
+            }
+        }
     }
 
 }
