@@ -1,36 +1,60 @@
-package com.example.dao;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.models.Produto;
 
 public class ProdutoDAO{
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "Password0108!";
 
-    public String cadastrarProduto(String nome, double avaliacao, String descricaoDetalhada, double valorProduto, int qtdEstoque) throws SQLException {
+    public String cadastrarProduto(String nome, double avaliacao, String descricaoDetalhada, int qtdEstoque, double valorProduto, String status) throws SQLException {
+        String sql = "INSERT INTO produtos (nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status) VALUES (?, ?, ?, ?, ?, ?)";
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+    
+            statement.setString(1, nome);
+            statement.setDouble(2, avaliacao);
+            statement.setString(3, descricaoDetalhada);
+            statement.setInt(4, qtdEstoque);
+            statement.setDouble(5, valorProduto);
+            statement.setString(6, status);
+    
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                return "Produto incluído com sucesso!";
+            } else {
+                return "Falha ao incluir produto.";
+            }
+        }
+    }
 
-    if (avaliacao < 1.0 || avaliacao > 5.0 || avaliacao % 0.5 != 0) return "Erro: Avaliação inválida!";
-    if (nome == null || nome.isEmpty()) return "Erro: Nome do produto não pode estar vazio!";
-    if (valorProduto <= 0) return "Erro: O preço deve ser maior que zero!";
-    if (qtdEstoque < 0) return "Erro: A quantidade em estoque não pode ser negativa!";
-
-    String sql = "INSERT INTO Produtos (nome, avaliacao, DescricaoDetalhada, Preco, QtdEstoque) "
-            + "VALUES (?, ?, ?, ?, ?)";
+public static List<Produto> listarProdutos() {
+    List<Produto> produtos = new ArrayList<>();
+    String sql = "SELECT * FROM produtos ORDER BY codigo DESC";
 
     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-         PreparedStatement inserirProdutoStmt = connection.prepareStatement(sql)) {
+         PreparedStatement statement = connection.prepareStatement(sql);
+         ResultSet rs = statement.executeQuery()) {
 
-        inserirProdutoStmt.setString(1, nome);
-        inserirProdutoStmt.setDouble(2, avaliacao);
-        inserirProdutoStmt.setString(3, descricaoDetalhada);
-        inserirProdutoStmt.setDouble(4, valorProduto);
-        inserirProdutoStmt.setInt(5, qtdEstoque);
-
-        inserirProdutoStmt.executeUpdate();
-        return "Produto cadastrado com sucesso!";
+        while (rs.next()) {
+            produtos.add(new Produto(
+                rs.getInt("codigo"),
+                rs.getString("nome"),
+                rs.getDouble("avaliacao"),
+                rs.getString("descricaoDetalhada"),
+                rs.getInt("qtdEstoque"),
+                rs.getDouble("valorProduto"),
+                rs.getString("status")
+            ));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-}
+    return produtos;
+    }
+
 }
