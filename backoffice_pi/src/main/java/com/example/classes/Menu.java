@@ -23,7 +23,7 @@ public class Menu {
         switch(opc){
             case 1:
                 System.out.println("Listar Produtos: ");
-                break;
+                MenuProduto.listarProdutos();
             case 2:
                 if ("adm".equals(usuario.getGrupo())) {
                     listarUsuarios(usuario); // Chama o método para listar usuários
