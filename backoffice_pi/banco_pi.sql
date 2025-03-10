@@ -44,3 +44,10 @@ CREATE TABLE imagensProduto (
     principal BOOLEAN NOT NULL,
     FOREIGN KEY (produto_id) REFERENCES produtos(codigo) ON DELETE CASCADE
 );
+
+/*Adicionar a coluna de Status no banco de dados.  */
+ALTER TABLE produtos ADD COLUMN status ENUM('ativo', 'desativado') NOT NULL DEFAULT 'ativo';
+
+
+
+
