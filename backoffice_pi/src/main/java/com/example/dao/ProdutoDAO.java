@@ -13,7 +13,7 @@ import com.example.models.Produto;
 public class ProdutoDAO{
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Password0108!";
+    private static final String DB_PASSWORD = "58725997";
 
     public String cadastrarProduto(String nome, double avaliacao, String descricaoDetalhada, int qtdEstoque, double valorProduto, String status) throws SQLException {
         String sql = "INSERT INTO produtos (nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status) VALUES (?, ?, ?, ?, ?, ?)";
