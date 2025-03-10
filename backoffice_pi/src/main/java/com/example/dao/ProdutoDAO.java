@@ -7,7 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.example.models.ImagemProduto;
+import java.sql.*;
 import com.example.models.Produto;
 
 public class ProdutoDAO{
