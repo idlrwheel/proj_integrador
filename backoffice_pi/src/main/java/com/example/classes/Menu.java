@@ -9,7 +9,11 @@ import com.example.dao.UsuarioDAO;
 import com.example.models.Usuario;
 
 public class Menu {
-    public static void exibirMenu(Usuario usuario){
+
+    public static void exibirMenu() {
+        // Obtém o usuário logado usando a SessionManager
+        Usuario usuario = SessionManager.getUsuarioLogado();
+
         Scanner sc = new Scanner(System.in);
         System.out.println("1) Listar produtos");
         
@@ -56,7 +60,7 @@ public class Menu {
 
         if ("0".equals(opcao)) {
             System.out.println("Voltando ao menu principal...");
-            exibirMenu(usuario);
+            exibirMenu();
 
         } else if ("i".equalsIgnoreCase(opcao)){
             incluirUsuario(usuario);
@@ -85,6 +89,7 @@ public class Menu {
                     break;
                 case 2:
                      alterarSenha(usuarioEscolhido);
+                     break;
                 case 3:
                     habilitarDesabilitar(usuarioEscolhido);
                     break;
@@ -94,109 +99,100 @@ public class Menu {
                 default:
                     System.out.println("Opção inválida");
             }
+        }
     }
-    }
+
     // Método para alterar um usuário
-public static void alterarUsuario(Usuario usuario) {
-    Scanner sc = new Scanner(System.in);
-    
-    System.out.println("Alterando usuário: " + usuario.getNome());
-    
-    System.out.println("Novo nome (deixe em branco para manter o atual): ");
-    String novoNome = sc.nextLine();
-    if (!novoNome.trim().isEmpty()) {
-        usuario.setNome(novoNome);
-    }
-    
-    System.out.println("Novo CPF (deixe em branco para manter o atual): ");
-    String novoCpf = sc.nextLine();
-    if (!novoCpf.trim().isEmpty()) {
-        usuario.setCpf(novoCpf);
-    }
-    
+    public static void alterarUsuario(Usuario usuario) {
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.println("Alterando usuário: " + usuario.getNome());
+        
+        System.out.println("Novo nome (deixe em branco para manter o atual): ");
+        String novoNome = sc.nextLine();
+        if (!novoNome.trim().isEmpty()) {
+            usuario.setNome(novoNome);
+        }
+        
+        System.out.println("Novo CPF (deixe em branco para manter o atual): ");
+        String novoCpf = sc.nextLine();
+        if (!novoCpf.trim().isEmpty()) {
+            usuario.setCpf(novoCpf);
+        }
 
-    //Comentado para não aparecer opção de alterar e-mail. 
-   /* System.out.println("Novo E-mail (deixe em branco para manter o atual): ");
-    String novoEmail = sc.nextLine();
-    if (!novoEmail.trim().isEmpty()) {
-        usuario.setEmail(novoEmail); 
-    }*/
-    
-    System.out.println("Novo Grupo (Adm/Estoquista) (deixe em branco para manter o atual): ");
-    String novoGrupo = sc.nextLine();
-    if (!novoGrupo.trim().isEmpty()) {
-        usuario.setGrupo(novoGrupo);
-    }
-    
-    System.out.println("Novo Status (Ativado/Desativado) (deixe em branco para manter o atual): ");
-    String novoStatus = sc.nextLine();
-    if (!novoStatus.trim().isEmpty()) {
-        usuario.setStatus(novoStatus);
-    }
+        System.out.println("Novo Grupo (Adm/Estoquista) (deixe em branco para manter o atual): ");
+        String novoGrupo = sc.nextLine();
+        if (!novoGrupo.trim().isEmpty()) {
+            usuario.setGrupo(novoGrupo);
+        }
+        
+        System.out.println("Novo Status (Ativado/Desativado) (deixe em branco para manter o atual): ");
+        String novoStatus = sc.nextLine();
+        if (!novoStatus.trim().isEmpty()) {
+            usuario.setStatus(novoStatus);
+        }
 
-    UsuarioDAO usuarioDAO = new UsuarioDAO();
-    usuarioDAO.alterarUsuario(usuario);
-
-   // System.out.println("Usuário atualizado com sucesso!");
-    listarUsuarios(usuario); // Volta para a lista de usuários
-}
-
-public static void alterarSenha(Usuario usuario) {
-    Scanner sc = new Scanner(System.in);
-
-    System.out.println("Alterando senha do usuário: " + usuario.getNome());
-
-    System.out.println("Digite a nova senha: ");
-    String novaSenha = sc.nextLine();
-
-    System.out.println("Digite a nova senha novamente: ");
-    String confirmarSenha = sc.nextLine();
-
-    if (!novaSenha.equals(confirmarSenha)) {
-        System.out.println("As senhas não coincidem. Tente novamente.");
-        alterarSenha(usuario);
-        return;
-    }
-
-    UsuarioDAO usuarioDAO = new UsuarioDAO();
-    try {
-        String senhaCripto = usuarioDAO.encriptarSenha(novaSenha);
-        usuario.setSenha(senhaCripto);  // Adicione o método setSenha na classe Usuario
-
-        usuarioDAO.alterarSenha(usuario.getEmail(), senhaCripto);
-
-        System.out.println("Senha atualizada com sucesso!");
-    } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-        System.out.println("Erro ao encriptar a senha.");
-    }
-}
-
- // Método para habilitar/desabilitar o status de um usuário
-public static void habilitarDesabilitar(Usuario usuario) {
-    Scanner sc = new Scanner(System.in);
-
-    System.out.println("Status atual do usuário: " + usuario.getStatus());
-    System.out.println("Deseja alterar o status? (S/N): ");
-    String resposta = sc.nextLine();
-
-    if ("S".equalsIgnoreCase(resposta)) {
-        // Alterna o status
-        String novoStatus = usuario.getStatus().equalsIgnoreCase("Ativado") ? "Desativado" : "Ativado";
-        usuario.setStatus(novoStatus);
-
-        // Atualiza no banco de dados
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         usuarioDAO.alterarUsuario(usuario);
 
-        System.out.println("Status atualizado para: " + novoStatus);
-    } else {
-        System.out.println("Operação cancelada.");
+        listarUsuarios(usuario); // Volta para a lista de usuários
     }
 
-    listarUsuarios(usuario); // Retorna para a lista de usuários
-}
-    
+    public static void alterarSenha(Usuario usuario) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Alterando senha do usuário: " + usuario.getNome());
+
+        System.out.println("Digite a nova senha: ");
+        String novaSenha = sc.nextLine();
+
+        System.out.println("Digite a nova senha novamente: ");
+        String confirmarSenha = sc.nextLine();
+
+        if (!novaSenha.equals(confirmarSenha)) {
+            System.out.println("As senhas não coincidem. Tente novamente.");
+            alterarSenha(usuario);
+            return;
+        }
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        try {
+            String senhaCripto = usuarioDAO.encriptarSenha(novaSenha);
+            usuario.setSenha(senhaCripto);  // Adicione o método setSenha na classe Usuario
+
+            usuarioDAO.alterarSenha(usuario.getEmail(), senhaCripto);
+
+            System.out.println("Senha atualizada com sucesso!");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            System.out.println("Erro ao encriptar a senha.");
+        }
+    }
+
+    // Método para habilitar/desabilitar o status de um usuário
+    public static void habilitarDesabilitar(Usuario usuario) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Status atual do usuário: " + usuario.getStatus());
+        System.out.println("Deseja alterar o status? (S/N): ");
+        String resposta = sc.nextLine();
+
+        if ("S".equalsIgnoreCase(resposta)) {
+            // Alterna o status
+            String novoStatus = usuario.getStatus().equalsIgnoreCase("Ativado") ? "Desativado" : "Ativado";
+            usuario.setStatus(novoStatus);
+
+            // Atualiza no banco de dados
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            usuarioDAO.alterarUsuario(usuario);
+
+            System.out.println("Status atualizado para: " + novoStatus);
+        } else {
+            System.out.println("Operação cancelada.");
+        }
+
+        listarUsuarios(usuario); // Retorna para a lista de usuários
+    }
 
     private static void incluirUsuario(Usuario usuarioLogado) {
         Scanner sc = new Scanner(System.in);
