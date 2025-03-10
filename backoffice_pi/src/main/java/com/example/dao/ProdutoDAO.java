@@ -15,6 +15,8 @@ public class ProdutoDAO{
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "58725997";
 
+
+    //Método para incluir um produto
     public String cadastrarProduto(String nome, double avaliacao, String descricaoDetalhada, int qtdEstoque, double valorProduto, String status) throws SQLException {
         String sql = "INSERT INTO produtos (nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status) VALUES (?, ?, ?, ?, ?, ?)";
     
@@ -102,5 +104,60 @@ public static List<Produto> listarProdutos() {
             }
         }
     }
+
+    public static void adicionarProduto(Produto produto) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'adicionarProduto'");
+    }
+    public Produto buscarProdutoPorId(int id) throws SQLException {
+        Produto produto = null;
+        String sql = "SELECT * FROM produtos WHERE codigo = ?"; // Seleciona o produto pelo código (ID)
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+    
+            statement.setInt(1, id); // Define o valor do ID no preparedStatement
+    
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) { // Se encontrar o produto
+                    produto = new Produto(
+                        rs.getInt("codigo"),
+                        rs.getString("nome"),
+                        rs.getDouble("avaliacao"),
+                        rs.getString("descricaoDetalhada"),
+                        rs.getInt("qtdEstoque"),
+                        rs.getDouble("valorProduto"),
+                        rs.getString("status")
+                    );
+                }
+            }
+        }
+    
+        return produto; // Retorna o produto encontrado ou null se não encontrar
+    }
+    public String atualizarProduto(Produto produto) throws SQLException {
+        String sql = "UPDATE produtos SET nome = ?, avaliacao = ?, descricaoDetalhada = ?, qtdEstoque = ?, valorProduto = ?, status = ? WHERE codigo = ?";
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+    
+            statement.setString(1, produto.getNome());
+            statement.setDouble(2, produto.getAvaliacao());
+            statement.setString(3, produto.getDescricaoDetalhada());
+            statement.setInt(4, produto.getQtdEstoque());
+            statement.setDouble(5, produto.getValorProduto());
+            statement.setString(6, produto.getStatus());
+            statement.setInt(7, produto.getCodigo());
+    
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                return "Produto atualizado com sucesso!";
+            } else {
+                return "Falha ao atualizar produto.";
+            }
+        }
+    }
+    
+    
 
 }

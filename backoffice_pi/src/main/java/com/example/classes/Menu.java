@@ -24,6 +24,7 @@ public class Menu {
             case 1:
                 System.out.println("Listar Produtos: ");
                 MenuProduto.listarProdutos();
+                break;
             case 2:
                 if ("adm".equals(usuario.getGrupo())) {
                     listarUsuarios(usuario); // Chama o método para listar usuários
