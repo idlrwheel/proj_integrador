@@ -81,14 +81,91 @@ public class MenuProduto {
         }
         listarProdutos(); // Volta para a lista de produtos
     }
-    
-    
 
+    //metodo incluirImagem
     private static void incluirImagem(int produtoId) throws SQLException {
-        // Código do método incluirImagem permanece inalterado
+        Scanner sc = new Scanner(System.in);
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+        boolean continuar = true;
+    
+        while (continuar) {
+            System.out.println("Incluir imagem do produto");
+            System.out.println("Nome do arquivo => ");
+            String nomeArquivo = sc.nextLine();
+            System.out.println("Diretório de origem => ");
+            String diretorioOrigem = sc.nextLine();
+            System.out.println("É a imagem principal? (Y/N) => ");
+            String imagemPrincipal = sc.nextLine();
+    
+            boolean principal = "Y".equalsIgnoreCase(imagemPrincipal);
+    
+            if (principal) {
+                produtoDAO.atualizarImagemPrincipal(produtoId);
+            }
+    
+            produtoDAO.cadastrarImagemProduto(produtoId, nomeArquivo, diretorioOrigem, principal);
+    
+            System.out.println("Salvar e incluir mais uma imagem (1), Salvar e finalizar (2), Não salvar e finalizar (3) => ");
+            int opcao = sc.nextInt();
+            sc.nextLine(); 
+    
+            switch (opcao) {
+                case 1:
+                    break;
+                case 2:
+                    salvarImagens(produtoId);
+                    listarProdutos();
+                    continuar = false;
+                    break;
+                case 3:
+                    listarProdutos();
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+
+    
+}
+    private static void alterarImagem(int produtoId) throws SQLException {
+    Scanner sc = new Scanner(System.in);
+    ProdutoDAO produtoDAO = new ProdutoDAO();
+    List<ImagemProduto> imagens = produtoDAO.listarImagensProduto(produtoId);
+
+    System.out.println("Imagens do Produto:");
+    for (ImagemProduto img : imagens) {
+        System.out.println(img.getId() + " | " + img.getNomeArquivo() + " | Principal: " + (img.isPrincipal() ? "Sim" : "Não"));
     }
 
+    System.out.println("Digite o ID da imagem para alterar ou 0 para voltar:");
+    int imagemId = sc.nextInt();
+    sc.nextLine();
+
+    if (imagemId == 0) return;
+
+    System.out.println("Novo nome do arquivo => ");
+    String novoNome = sc.nextLine();
+    System.out.println("Novo diretório de origem => ");
+    String novoDiretorio = sc.nextLine();
+    System.out.println("Definir como principal? (Y/N) => ");
+    boolean principal = sc.nextLine().equalsIgnoreCase("Y");
+
+    boolean sucesso = produtoDAO.alterarImagemProduto(imagemId, novoNome, novoDiretorio, principal);
+    if (sucesso) {
+        System.out.println("Imagem atualizada com sucesso!");
+    } else {
+        System.out.println("Erro ao atualizar a imagem.");
+    }
+}
+
     private static void salvarImagens(int produtoId) {
-        // Código do método salvarImagens permanece inalterado
+    String diretorioDestino = "/imagens/" + produtoId;
+    File diretorio = new File(diretorioDestino);
+    if (!diretorio.exists()) {
+        diretorio.mkdirs();
+    }
+    System.out.println("Imagens salvas com sucesso no diretório: " + diretorioDestino);
+    
     }
 }
