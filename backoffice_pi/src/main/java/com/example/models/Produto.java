@@ -1,5 +1,8 @@
 package com.example.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Produto {
     private int codigo;
     private String nome;
@@ -8,6 +11,8 @@ public class Produto {
     private int qtdEstoque;
     private double valorProduto;
     private String status;
+    private String imagemPrincipal;
+    private List<String> imagens;
 
     public Produto(int codigo, String nome, double avaliacao, String descricaoDetalhada, int qtdEstoque, double valorProduto, String status) {
         this.codigo = codigo;
@@ -17,8 +22,10 @@ public class Produto {
         this.qtdEstoque = qtdEstoque;
         this.valorProduto = valorProduto;
         this.status = status;
+        this.imagens = new ArrayList<>();
     }
 
+    // Getters e Setters
     public int getCodigo() {
         return codigo;
     }
@@ -27,46 +34,12 @@ public class Produto {
         this.codigo = codigo;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getNome() {
         return nome;
     }
 
-    
-
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricaoDetalhada;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricaoDetalhada = descricao;
-    }
-
-    public double getValorProduto() {
-        return valorProduto;
-    }
-
-    public void setValorProduto(double valorProduto) {
-        this.valorProduto = valorProduto;
-    }
-
-    public int getQtdEstoque() {
-        return qtdEstoque;
-    }
-
-    public void setQtdEstoque(int qtdEstoque) {
-        this.qtdEstoque = qtdEstoque;
     }
 
     public double getAvaliacao() {
@@ -84,7 +57,47 @@ public class Produto {
     public void setDescricaoDetalhada(String descricaoDetalhada) {
         this.descricaoDetalhada = descricaoDetalhada;
     }
-    
+
+    public int getQtdEstoque() {
+        return qtdEstoque;
+    }
+
+    public void setQtdEstoque(int qtdEstoque) {
+        this.qtdEstoque = qtdEstoque;
+    }
+
+    public double getValorProduto() {
+        return valorProduto;
+    }
+
+    public void setValorProduto(double valorProduto) {
+        this.valorProduto = valorProduto;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // Métodos para imagens
+    public String getImagemPrincipal() {
+        return imagemPrincipal;
+    }
+
+    public void setImagemPrincipal(String imagemPrincipal) {
+        this.imagemPrincipal = imagemPrincipal;
+    }
+
+    public List<String> getImagens() {
+        return imagens;
+    }
+
+    public void adicionarImagem(String imagem) {
+        this.imagens.add(imagem);
+    }
 }
 
     
