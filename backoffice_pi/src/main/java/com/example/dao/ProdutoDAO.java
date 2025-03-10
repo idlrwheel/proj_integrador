@@ -64,7 +64,7 @@ public static List<Produto> listarProdutos() {
     return produtos;
     }
 
-    public void cadastrarImagemProduto(int produtoId, String nomeArquivo, String diretorioOrigem, boolean principal) throws SQLException {
+       public void cadastrarImagemProduto(int produtoId, String nomeArquivo, String diretorioOrigem, boolean principal) throws SQLException {
         String sql = "INSERT INTO imagensProduto (produto_id, nome_arquivo, diretorio_origem, principal) VALUES (?, ?, ?, ?)";
     
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
@@ -88,6 +88,58 @@ public static List<Produto> listarProdutos() {
             statement.setInt(1, produtoId);
             statement.executeUpdate();
         }
+    }
+
+    public boolean alterarImagemProduto(int imagemId, String novoNomeArquivo, String novoDiretorio, boolean principal) throws SQLException {
+        if (principal) {
+            // Se a nova imagem for principal, desmarcar as outras imagens do produto
+            String sqlUpdatePrincipal = "UPDATE imagensProduto SET principal = false WHERE produto_id = (SELECT produto_id FROM imagensProduto WHERE id = ?)";
+
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+                 PreparedStatement statement = connection.prepareStatement(sqlUpdatePrincipal)) {
+
+                statement.setInt(1, imagemId);
+                statement.executeUpdate();
+            }
+        }
+
+        String sql = "UPDATE imagensProduto SET nome_arquivo = ?, diretorio_origem = ?, principal = ? WHERE id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, novoNomeArquivo);
+            statement.setString(2, novoDiretorio);
+            statement.setBoolean(3, principal);
+            statement.setInt(4, imagemId);
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
+
+
+    public List<ImagemProduto> listarImagensProduto(int produtoId) throws SQLException {
+        List<ImagemProduto> imagens = new ArrayList<>();
+        String sql = "SELECT id, nome_arquivo, diretorio_origem, principal FROM imagensProduto WHERE produto_id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, produtoId);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    imagens.add(new ImagemProduto(
+                        rs.getInt("id"),
+                        produtoId,
+                        rs.getString("nome_arquivo"),
+                        rs.getString("diretorio_origem"),
+                        rs.getBoolean("principal")
+                    ));
+                }
+            }
+        }
+        return imagens;
     }
 
     public int obterUltimoProdutoId() throws SQLException {
