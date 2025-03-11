@@ -86,16 +86,18 @@ public class MenuProduto {
 
         ProdutoDAO produtoDAO = new ProdutoDAO();
         try {
-            // Chama o método de cadastro no ProdutoDAO
-            String resultado = produtoDAO.cadastrarProduto(nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status);
-            System.out.println(resultado);  // Exibe a mensagem de sucesso ou falha
+             String resultado = produtoDAO.cadastrarProduto(nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status);
+                 System.out.println(resultado);
+                 listarProdutos();
+                 int produtoId = produtoDAO.obterUltimoProdutoId(); 
+                 incluirImagem(produtoId); 
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar produto: " + e.getMessage());
         }
 
         listarProdutos(); // Volta para a lista de produtos após cadastrar
+        
     }
-
     private static void editarProduto(int id) {
         ProdutoDAO produtoDAO = new ProdutoDAO();
 
