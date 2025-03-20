@@ -1,0 +1,141 @@
+body{
+    font-family: "Noto Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    background-color: #f8f8f8;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    border-bottom: 1px solid #ddd;
+}
+
+header .logo-menu {
+    display: flex;
+    align-items: center; 
+    gap: 15px; 
+}
+
+header .logo {
+    max-height: 50px;
+    object-fit: contain;
+}
+
+header .menu_bar {
+    height: 30px;
+    cursor: pointer; 
+}
+
+header .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-container {
+    position: relative; 
+    width: 100%; 
+    max-width: 500px; 
+}
+
+.search-bar {
+    width: 100%;
+    margin-right: 150px;
+    padding: 10px;
+    background-color: #D9D9D9;
+    border: 1px solid #f1f1f1;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.search-icon {
+    position: absolute; 
+    right: 5px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    width: 20px; 
+    height: 20px;
+    pointer-events: none; 
+}
+.login {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #007bff;
+    font-size: 14px;
+    gap: 15px; 
+}
+
+.icone-usuario {
+    margin-left: 50px;
+    width: 30px;
+    height: 30px;
+    display: block;
+}
+
+
+.login:hover {
+    text-decoration: underline;
+    color:#36494E;
+}
+
+header .carrinho {
+    margin-right: 10px;
+    max-height: 30px;
+    cursor: pointer;
+}
+
+header .carrinho:hover{
+    transform: translateX(15%); 
+}
+
+section.ofertas {
+    text-align: center;
+    padding: 40px 20px;
+    background: #36494E;
+    box-shadow: 0px 4px 60px 0px rgba(0, 0, 0, 0.25);
+    text-align: left;
+}
+
+section.ofertas h2 {
+    font-size: 28px;
+    color: #f1f1f1;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 20px;
+}
+
+.produtos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.produtos #produtos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 250px;
+    padding: 15px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    max-width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
