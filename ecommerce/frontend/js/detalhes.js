@@ -1,6 +1,6 @@
-
 const params = new URLSearchParams(window.location.search);
 const codigoProduto = params.get("codigo");
+console.log('Código do produto:', codigoProduto);
 
 const carregarDetalhesProduto = async () => {
     const imagemElemento = document.getElementById("imagem-produto");
@@ -11,10 +11,18 @@ const carregarDetalhesProduto = async () => {
     const descricaoElemento = document.getElementById("descricao-produto");
 
     try {
+        console.log(`Buscando detalhes do produto com o código: ${codigoProduto}`);
         const response = await fetch(`http://localhost:8080/produtos/${codigoProduto}`);
-        const produto = await response.json();
+        console.log('Resposta da requisição:', response);
 
-        imagemElemento.src = produto.imagens[0]?.diretorioOrigem || '/frontend/assets/default.jpg';
+        if (!response.ok) {
+            throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
+        }
+
+        const produto = await response.json();
+        console.log('Produto carregado:', produto);
+
+        imagemElemento.src = produto.imagens[0]?.diretorioOrigem || '/ecommerce/frontend/assets/default.png';
         nomeElemento.innerText = produto.nome;
         avaliacaoElemento.innerText = `Avaliação: ${produto.avaliacao} ⭐`;
         precoElemento.innerText = `Preço: R$ ${produto.valorProduto.toFixed(2)}`;
@@ -25,4 +33,10 @@ const carregarDetalhesProduto = async () => {
         document.querySelector(".detalhes-produto").innerHTML = "<p>Erro ao carregar os detalhes do produto. Tente novamente mais tarde.</p>";
     }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM carregado!');
+    carregarDetalhesProduto();
+});
+
 

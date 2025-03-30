@@ -3,21 +3,24 @@ const carregarProdutos = async () => {
     try {
         const response = await fetch('http://localhost:8080/produtos'); 
         const produtos = await response.json();
+        console.log(produtos);
 
         produtos.forEach(produto => {
-            if (produto.status === 'ativo' && produto.qtdEstoque > 0) {
+            if (produto.status.toUpperCase() === 'ATIVO' && produto.qtdEstoque > 0) {
                 const card = document.createElement('div'); 
                 card.classList.add('produto-card');
                 card.innerHTML = `
-                    <img src="${produto.imagens[0]?.diretorioOrigem || '/frontend/assets/default.jpg'}" alt="${produto.nome}" class="produto-imagem">
+                    <img src="${produto.imagens[0]?.diretorioOrigem || '/ecommerce/frontend/assets/default.png'}" alt="${produto.nome}" class="produto-imagem">
                     <div class="produto-info">
                         <h3>${produto.nome}</h3>
                         <p>Avaliação: ${produto.avaliacao} ⭐</p>
                         <p>Preço: R$ ${produto.valorProduto.toFixed(2)}</p>
-                        <button onclick="verDetalhes(${produto.codigo})" class="botao-detalhes">Ver Detalhes</button>
+                        <button onclick="verDetalhes(${produto.codigo})" class="botao-detalhes">Comprar</button>
                     </div>
                 `;
-                container.appendChild(card);
+                console.log(container);
+                container.appendChild(card); 
+                console.log('Card criado:', card);
             }
         });
     } catch (error) {
@@ -27,8 +30,11 @@ const carregarProdutos = async () => {
 };
 
 const verDetalhes = (codigo) => {
-    window.location.href = `/frontend/detalhes.html?codigo=${codigo}`; 
+    window.location.href = `/ecommerce/frontend/detalhes.html?codigo=${codigo}`; 
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM carregado!');
+    carregarProdutos();
+});
 
-document.addEventListener('DOMContentLoaded', carregarProdutos);
