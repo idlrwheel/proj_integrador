@@ -1,3 +1,10 @@
+package com.example.ecommerce.model;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.List;
+
 
 @Entity
 public class Produto {
@@ -84,6 +91,3 @@ public class Produto {
     
 }
 
-public enum Status {
-    ATIVO, DESATIVADO;
-}

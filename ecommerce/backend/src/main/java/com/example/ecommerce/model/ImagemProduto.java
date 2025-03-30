@@ -1,3 +1,7 @@
+package com.example.ecommerce.model;
+
+import jakarta.persistence.*;
+
 @Entity
 public class ImagemProduto {
     @Id
