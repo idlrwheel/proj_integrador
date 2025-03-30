@@ -1,11 +1,13 @@
 package com.example.classes;
 
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 import com.example.dao.ProdutoDAO;
+import com.example.models.ImagemProduto;
 import com.example.models.Produto;
 import com.example.models.Usuario;
 
@@ -29,7 +31,7 @@ public class MenuProduto {
             String opcao = scanner.nextLine();
 
             if (opcao.equals("0")) {
-                return;
+                Menu.exibirMenu();
             } else if (opcao.equalsIgnoreCase("i")) {
                 incluirProduto();
             } else {
@@ -88,14 +90,13 @@ public class MenuProduto {
         try {
              String resultado = produtoDAO.cadastrarProduto(nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status);
                  System.out.println(resultado);
-                 listarProdutos();
                  int produtoId = produtoDAO.obterUltimoProdutoId(); 
                  incluirImagem(produtoId); 
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar produto: " + e.getMessage());
         }
 
-        listarProdutos(); // Volta para a lista de produtos após cadastrar
+        listarProdutos(); 
         
     }
     private static void editarProduto(int id) {
@@ -130,7 +131,8 @@ public class MenuProduto {
                 System.out.println("Novo status (ativo/desativado): ");
                 produto.setStatus(sc.nextLine());
 
-                // Agora, atualiza o produto no banco de dados
+                System.out.println("Deseja alterar a imagem do produto: ");
+
                 String resultado = produtoDAO.atualizarProduto(produto);
                 System.out.println(resultado);
             } else {
@@ -143,7 +145,6 @@ public class MenuProduto {
         listarProdutos(); // Volta para a lista de produtos
     }
 
-    // Método para o estoquista editar apenas a quantidade em estoque
     private static void editarQuantidadeEstoque(int id) {
         ProdutoDAO produtoDAO = new ProdutoDAO();
 
@@ -168,7 +169,7 @@ public class MenuProduto {
             System.out.println("Erro ao buscar ou atualizar produto: " + e.getMessage());
         }
 
-        listarProdutos(); // Volta para a lista de produtos
+        listarProdutos(); 
     }
 
     private static void incluirImagem(int produtoId) throws SQLException {
@@ -188,7 +189,7 @@ public class MenuProduto {
             boolean principal = "Y".equalsIgnoreCase(imagemPrincipal);
     
             if (principal) {
-                produtoDAO.atualizarImagemPrincipal(produtoId);
+                produtoDAO.atualizarImagemPrincipal(produtoId, 0, diretorioOrigem);
             }
     
             produtoDAO.cadastrarImagemProduto(produtoId, nomeArquivo, diretorioOrigem, principal);
@@ -201,7 +202,7 @@ public class MenuProduto {
                 case 1:
                     break;
                 case 2:
-                    salvarImagens(produtoId);
+                    salvarImagens(produtoId, nomeArquivo, diretorioOrigem);
                     listarProdutos();
                     continuar = false;
                     break;
@@ -242,18 +243,36 @@ public class MenuProduto {
     boolean sucesso = produtoDAO.alterarImagemProduto(imagemId, novoNome, novoDiretorio, principal);
     if (sucesso) {
         System.out.println("Imagem atualizada com sucesso!");
+        salvarImagens(imagemId, novoNome, novoDiretorio);
     } else {
         System.out.println("Erro ao atualizar a imagem.");
     }
 }
 
-    private static void salvarImagens(int produtoId) {
-    String diretorioDestino = "/imagens/" + produtoId;
+private static boolean salvarImagens(int produtoId, String nomeArquivo, String diretorioOrigem) {
+    if (produtoId <= 0) {
+        System.err.println("Erro: ID do produto inválido.");
+        return false;
+    }
+
+    String diretorioDestino = diretorioOrigem + File.separator + nomeArquivo;
     File diretorio = new File(diretorioDestino);
-    if (!diretorio.exists()) {
-        diretorio.mkdirs();
+
+    try {
+        if (!diretorio.exists() && diretorio.mkdirs()) {
+            System.out.println("Imagens salvas com sucesso no diretório: " + diretorioDestino);
+            return true;
+        } else if (diretorio.exists()) {
+            System.out.println("O diretório já existe: " + diretorioDestino);
+            return true;
+        } else {
+            System.err.println("Erro ao criar o diretório: " + diretorioDestino);
+        }
+    } catch (SecurityException e) {
+        System.err.println("Erro de permissão ao criar o diretório: " + e.getMessage());
     }
-    System.out.println("Imagens salvas com sucesso no diretório: " + diretorioDestino);
-    
-    }
+
+    return false;
+}
+
 }

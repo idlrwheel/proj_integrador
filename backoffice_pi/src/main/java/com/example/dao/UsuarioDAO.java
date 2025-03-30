@@ -2,16 +2,21 @@ package com.example.dao;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import com.example.models.Usuario;
 
 public class UsuarioDAO {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "58725997";
+    private static final String DB_PASSWORD = "Password0108!";
 
     // Método para validar login
     public Usuario validarLogin(String email, String senha) {
@@ -30,18 +35,17 @@ public class UsuarioDAO {
                 String cpf = rs.getString("cpf");
 
                 if (!"ativado".equalsIgnoreCase(status) || (!"adm".equalsIgnoreCase(grupo) && !"estoquista".equalsIgnoreCase(grupo))) {
-                    System.out.println("Acesso negado! Conta desativada ou grupo inválido.");
+                    System.out.println("Acesso negado! Conta desativada ou grupo invalido.");
                     return null;
                 }
 
                 if (encriptarSenha(senha).equals(senhaHash)) {
-                    System.out.println("Login bem-sucedido!");
                     return new Usuario(email, grupo, status, nome, cpf, senha);
                 } else {
                     System.out.println("Erro: Senha incorreta!");
                 }
             } else {
-                System.out.println("Erro: Usuário não encontrado!");
+                System.out.println("Erro: Usuario não encontrado!");
             }
         } catch (SQLException | NoSuchAlgorithmException e) {
             e.printStackTrace();

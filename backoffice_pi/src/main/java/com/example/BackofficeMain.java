@@ -1,6 +1,7 @@
 package com.example;
 
 import java.util.Scanner;
+
 import com.example.classes.Menu;
 import com.example.classes.SessionManager;
 import com.example.dao.UsuarioDAO;
@@ -24,7 +25,6 @@ public class BackofficeMain {
             // Configura o usuário logado na sessão
             SessionManager.setUsuarioLogado(usuario);
 
-            // Chama o menu sem precisar passar o usuário como parâmetro
             Menu.exibirMenu(); // Agora o menu obtém o usuário diretamente da sessão
         } else{
             System.out.println("<< Não foi possível identificar o usuário, tente novamente >>");

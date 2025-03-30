@@ -54,26 +54,6 @@ BEGIN
     END IF;
 END;
 
-CREATE PROCEDURE alterarImagemProduto(
-    IN p_id_imagem INT,
-    IN p_novo_nome VARCHAR(255),
-    IN p_novo_diretorio VARCHAR(255),
-    IN p_principal BOOLEAN
-)
-
-BEGIN
-    IF p_principal = TRUE THEN
-        UPDATE imagensProduto 
-        SET principal = FALSE 
-        WHERE produto_id = (SELECT produto_id FROM imagensProduto WHERE id = p_id_imagem);
-    END IF;
-
-    UPDATE imagensProduto 
-    SET nome_arquivo = p_novo_nome, 
-        diretorio_origem = p_novo_diretorio, 
-        principal = p_principal 
-    WHERE id = p_id_imagem;
-END;
 
 /*Adicionar a coluna de Status no banco de dados.  */
 ALTER TABLE produtos ADD COLUMN status ENUM('ativo', 'desativado') NOT NULL DEFAULT 'ativo';

@@ -139,3 +139,47 @@ section.ofertas h2 {
     object-fit: cover;
     border-radius: 8px;
 }
+
+.voltar {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.detalhes-produto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.produto-container {
+    display: flex;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    overflow: hidden;
+}
+
+.produto-imagem {
+    width: 50%;
+    object-fit: cover;
+}
+
+.produto-info {
+    padding: 20px;
+    flex: 1;
+}
+
+.produto-info h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.produto-info p {
+    font-size: 16px;
+    margin: 10px 0;
+}

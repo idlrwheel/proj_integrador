@@ -25,7 +25,6 @@ public class Produto {
         this.imagens = new ArrayList<>();
     }
 
-    // Getters e Setters
     public int getCodigo() {
         return codigo;
     }

@@ -1,0 +1,9 @@
+com\example\BackofficeMain.class
+com\example\classes\MenuProduto.class
+com\example\models\ImagemProduto.class
+com\example\models\Usuario.class
+com\example\classes\SessionManager.class
+com\example\classes\Menu.class
+com\example\dao\UsuarioDAO.class
+com\example\models\Produto.class
+com\example\dao\ProdutoDAO.class

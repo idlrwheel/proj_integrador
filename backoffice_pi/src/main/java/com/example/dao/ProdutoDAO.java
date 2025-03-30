@@ -7,14 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.example.models.ImagemProduto;
-import java.sql.*;
 import com.example.models.Produto;
 
 public class ProdutoDAO{
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "58725997";
+    private static final String DB_PASSWORD = "Password0108!";
 
 
     //Método para incluir um produto
@@ -80,44 +80,77 @@ public static List<Produto> listarProdutos() {
         }
     }
 
-    public void atualizarImagemPrincipal(int produtoId) throws SQLException {
-        String sql = "UPDATE imagensProduto SET principal = false WHERE produto_id = ?";
+    public void atualizarImagemPrincipal(int produtoId, int imagemId, String diretorio) throws SQLException {
+        String sqlUpdatePrincipal = "UPDATE imagensProduto SET principal = false WHERE produto_id = ?";
+        String sqlSetPrincipal = "UPDATE imagensProduto SET principal = true, diretorio_origem = ? WHERE id = ?";
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            // Desmarcar outras imagens do produto
+            try (PreparedStatement statement = connection.prepareStatement(sqlUpdatePrincipal)) {
+                statement.setInt(1, produtoId);
+                statement.executeUpdate();
+            }
+    
+            // Definir a nova imagem como principal e atualizar o diretório
+            try (PreparedStatement statement = connection.prepareStatement(sqlSetPrincipal)) {
+                statement.setString(1, diretorio);
+                statement.setInt(2, imagemId);
+                statement.executeUpdate();
+            }
+        }
+    }
+    
+
+    public boolean alterarImagemProduto(int imagemId, String novoNomeArquivo, String novoDiretorio, boolean principal) throws SQLException {
+        if (principal) {
+            // Desmarcar outras imagens principais do mesmo produto
+            String sqlUpdatePrincipal = "UPDATE imagensProduto SET principal = false WHERE produto_id = (SELECT produto_id FROM imagensProduto WHERE id = ?)";
+    
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+                 PreparedStatement statement = connection.prepareStatement(sqlUpdatePrincipal)) {
+                statement.setInt(1, imagemId);
+                statement.executeUpdate();
+            }
+        }
+    
+        String sql = "UPDATE imagensProduto SET nome_arquivo = ?, diretorio_origem = ?, principal = ? WHERE id = ?";
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, novoNomeArquivo);
+            statement.setString(2, novoDiretorio);
+            statement.setBoolean(3, principal);
+            statement.setInt(4, imagemId);
+    
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
+
+    public ImagemProduto getImagemPrincipal(int produtoId) throws SQLException {
+        String sql = "SELECT id, produto_id, nome_arquivo, diretorio_origem, principal FROM imagensProduto WHERE produto_id = ? AND principal = true";
     
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
              PreparedStatement statement = connection.prepareStatement(sql)) {
     
             statement.setInt(1, produtoId);
-            statement.executeUpdate();
-        }
-    }
-
-    public boolean alterarImagemProduto(int imagemId, String novoNomeArquivo, String novoDiretorio, boolean principal) throws SQLException {
-        if (principal) {
-            // Se a nova imagem for principal, desmarcar as outras imagens do produto
-            String sqlUpdatePrincipal = "UPDATE imagensProduto SET principal = false WHERE produto_id = (SELECT produto_id FROM imagensProduto WHERE id = ?)";
-
-            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-                 PreparedStatement statement = connection.prepareStatement(sqlUpdatePrincipal)) {
-
-                statement.setInt(1, imagemId);
-                statement.executeUpdate();
+    
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new ImagemProduto(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("produto_id"),
+                        resultSet.getString("nome_arquivo"),
+                        resultSet.getString("diretorio_origem"),
+                        resultSet.getBoolean("principal")
+                    );
+                }
             }
         }
-
-        String sql = "UPDATE imagensProduto SET nome_arquivo = ?, diretorio_origem = ?, principal = ? WHERE id = ?";
-
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, novoNomeArquivo);
-            statement.setString(2, novoDiretorio);
-            statement.setBoolean(3, principal);
-            statement.setInt(4, imagemId);
-
-            int rowsUpdated = statement.executeUpdate();
-            return rowsUpdated > 0;
-        }
+        return null; // Nenhuma imagem principal encontrada
     }
+    
+    
 
 
     public List<ImagemProduto> listarImagensProduto(int produtoId) throws SQLException {
