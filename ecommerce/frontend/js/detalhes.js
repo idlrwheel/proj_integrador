@@ -14,7 +14,6 @@ const carregarDetalhesProduto = async () => {
         const response = await fetch(`http://localhost:8080/produtos/${codigoProduto}`);
         const produto = await response.json();
 
-        // Populando os detalhes do produto na página
         imagemElemento.src = produto.imagens[0]?.diretorioOrigem || '/frontend/assets/default.jpg';
         nomeElemento.innerText = produto.nome;
         avaliacaoElemento.innerText = `Avaliação: ${produto.avaliacao} ⭐`;
