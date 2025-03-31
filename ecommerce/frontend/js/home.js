@@ -6,6 +6,8 @@ const carregarProdutos = async () => {
         return;
     }
 
+    container.innerHTML = '';
+
     try {
         const response = await fetch('http://localhost:8080/produtos'); 
         if (!response.ok) {
@@ -23,7 +25,6 @@ const carregarProdutos = async () => {
             console.log(`Produto: ${produto.nome}, Status: ${produto.status}, Estoque: ${produto.qtdEstoque}`);
         
             if (produto.status === 'ativo' && produto.qtdEstoque > 0) {
-                console.log('Criando card para:', produto.nome);
         
                 const card = document.createElement('div'); 
                 card.classList.add('produto-card');
@@ -38,7 +39,6 @@ const carregarProdutos = async () => {
                     </div>
                 `;
         
-                console.log('Card criado HTML:', card.outerHTML);
                 container.appendChild(card);
             }
         });
@@ -49,8 +49,6 @@ const carregarProdutos = async () => {
         container.innerHTML = '<p>Erro ao carregar produtos. Tente novamente mais tarde.</p>';
     }
 };
-
-document.addEventListener('DOMContentLoaded', carregarProdutos);
 
 
 const verDetalhes = (codigo) => {
