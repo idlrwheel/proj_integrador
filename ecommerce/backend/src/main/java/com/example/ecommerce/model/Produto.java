@@ -20,10 +20,10 @@ public class Produto {
     @Column(name = "qtdEstoque")
     private Integer qtdEstoque;
     @Column(name = "valorProduto")
-    private BigDecimal valorProduto; 
+    private BigDecimal valorProduto;
 
     @Enumerated(EnumType.STRING)
-    private Status status; 
+    private Status status;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
     private List<ImagemProduto> imagens;
@@ -91,9 +91,7 @@ public class Produto {
 
     public void setImagens(List<ImagemProduto> imagens) {
         this.imagens = imagens;
-    } 
+    }
 
-    
+
 }
-
-

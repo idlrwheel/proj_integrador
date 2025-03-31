@@ -54,11 +54,7 @@ public class ImagemProduto {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
-    } 
+    }
 
-   
+
 }
-
-
-
-
