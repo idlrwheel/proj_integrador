@@ -15,7 +15,7 @@ const carregarProdutos = async () => {
                         <h3>${produto.nome}</h3>
                         <p>Avaliação: ${produto.avaliacao} ⭐</p>
                         <p>Preço: R$ ${produto.valorProduto.toFixed(2)}</p>
-                        <button onclick="verDetalhes(${produto.codigo})" class="botao-detalhes">Comprar</button>
+                        <button onclick="verDetalhes(${produto.codigo})" class="botao-detalhes">Detalhes</button>
                     </div>
                 `;
                 console.log(container);

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes do Produto</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
@@ -13,9 +14,7 @@
     <header>
         <div class="logo-menu">
         <img src="/ecommerce/frontend/assets/logo.png" alt="Logo da Loja" class="logo">
-        <a href="/ecommerce/frontend/index.html" class="voltar" alt="voltar">
-            <img src="/ecommerce/frontend/assets/angle-left.png">
-        </a>
+        <img src="/ecommerce/frontend/assets/menu-burger.png" alt="menu" class="menu_bar">
         </div>
         <div class="top-bar">
             <div class="search-container">
@@ -29,18 +28,36 @@
             <img src="/ecommerce/frontend/assets/cart.png" alt="Carrinho" class="carrinho">
         </div>
     </header>
+    
+    <div class="return-home">
+        <a href="/ecommerce/frontend/index.html" class="voltar" alt="voltar">
+            <img src="/ecommerce/frontend/assets/angle-left.png">
+        </a>
+    </div>
     <section class="detalhes-produto">
-        <div class="produto-container">
-            <img id="imagem-produto" class="produto-imagem" alt="Imagem do Produto">
-            <div class="produto-info">
+        <div class="detalhe-container">
+            <div class="detalhe-info">
                 <h1 id="nome-produto"></h1>
                 <p id="avaliacao-produto"></p>
                 <p id="preco-produto"></p>
                 <p id="estoque-produto"></p>
                 <p id="descricao-produto"></p>
+                <button id="comprar-botao" class="botao-comprar">Comprar</button>
+            </div>
+
+            <div class="detalhe-carrossel">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper" id="swiper-wrapper">
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
             </div>
         </div>
     </section>
-    <script src="/ecommerce/frontend/js/detalhes.js"></script> 
+    
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="/ecommerce/frontend/js/detalhes.js"></script>
 </body>
 </html>
