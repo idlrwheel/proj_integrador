@@ -43,8 +43,8 @@ const carregarDetalhesProduto = async () => {
         nomeElemento.innerText = produto.nome;
         avaliacaoElemento.innerText = `Avaliação: ${produto.avaliacao} ⭐`;
         precoElemento.innerText = `Preço: R$ ${produto.valorProduto.toFixed(2)}`;
-        estoqueElemento.innerText = `Estoque: ${produto.qtdEstoque > 0 ? `${produto.qtdEstoque} unidades` : "Indisponível"}`;
-        descricaoElemento.innerText = produto.descricaoDetalhada;
+        estoqueElemento.innerText = `Estoque: ${produto.qtdEstoque > 0 ? `${produto.qtdEstoque} ` : "Indisponível"}`;
+        descricaoElemento.innerText = `Descrição: ${produto.descricaoDetalhada}`;
 
         const isLoopEnabled = produtoImagens.length >= 3;
         new Swiper(".swiper-container", {

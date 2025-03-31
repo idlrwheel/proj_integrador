@@ -26,6 +26,10 @@ public class ProdutoService {
     }
 
     public Produto adicionarProduto(Produto produto) {
+        Optional<Produto> existente = produtoRepository.findByNome(produto.getNome());
+        if (existente.isPresent()) {
+            throw new IllegalArgumentException("Produto com o nome '" + produto.getNome() + "' já existe.");
+        }
         return produtoRepository.save(produto);
     }
 
