@@ -2,17 +2,17 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Produto;
 import com.example.ecommerce.services.ProdutoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
+@CrossOrigin(origins = "http://127.0.0.1:5500") // Altere a origem conforme necessário
 public class ProdutoController {
+
     private final ProdutoService produtoService;
 
     public ProdutoController(ProdutoService produtoService) {
@@ -42,30 +42,40 @@ public class ProdutoController {
 
     @PostMapping
     public ResponseEntity<Produto> adicionarProduto(@RequestBody Produto produto) {
-        Produto novoProduto = produtoService.adicionarProduto(produto);
-        return ResponseEntity.ok(novoProduto);
+        try {
+            Produto novoProduto = produtoService.adicionarProduto(produto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novoProduto);
+        } catch (Exception e) {
+            System.err.println("Erro ao adicionar produto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PutMapping("/{codigo}")
     public ResponseEntity<Produto> atualizarProduto(@PathVariable int codigo, @RequestBody Produto produtoAtualizado) {
-        Produto produto = produtoService.atualizarProduto(codigo, produtoAtualizado);
-        if (produto != null) {
-            return ResponseEntity.ok(produto);
-        } else {
+        try {
+            Produto produto = produtoService.atualizarProduto(codigo, produtoAtualizado);
+            if (produto != null) {
+                return ResponseEntity.ok(produto);
+            }
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.err.println("Erro ao atualizar produto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @DeleteMapping("/{codigo}")
     public ResponseEntity<String> excluirProduto(@PathVariable int codigo) {
-        boolean excluido = produtoService.excluirProduto(codigo);
-        if (excluido) {
-            return ResponseEntity.ok("Produto excluído com sucesso!");
-        } else {
+        try {
+            boolean excluido = produtoService.excluirProduto(codigo);
+            if (excluido) {
+                return ResponseEntity.ok("Produto excluído com sucesso!");
+            }
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.err.println("Erro ao excluir produto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno");
         }
     }
 }
-
-
-
