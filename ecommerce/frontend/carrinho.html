@@ -1,47 +1,78 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/styles.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <title>Carrinho</title>
-    </head>
-    <body>
-        <header>
-            <div class="logo-menu">
-            <img src="/ecommerce/frontend/assets/logo.png" alt="Logo da Loja" class="logo">
-            <img src="/ecommerce/frontend/assets/menu-burger.png" alt="menu" class="menu_bar">
-            </div>
-            <div class="top-bar">
-                <div class="search-container">
-                    <input type="text" placeholder="Como podemos ajudar?" class="search-bar">
-                    <img src="/ecommerce/frontend/assets/search.png" alt="pesquisar" class="search-icon">
-                </div>
-                <a href="#" class="login">
-                    <img src="/ecommerce/frontend/assets/circle-user.png" alt="usuario" class="icone-usuario">
-                    Faça Login
-                </a>
-                <a href="/ecommerce/frontend/carrinho.html" class="carrinho">
-                    <img src="/ecommerce/frontend/assets/cart.png" alt="Carrinho" class="carrinho">
-                </a>
-            </div>
-        </header>
+const listaCarrinho = document.getElementById('lista-carrinho');
+const botaoLimpar = document.getElementById('limpar-carrinho');
 
-        <section class="detalhes">
-            <a href="/ecommerce/frontend/index.html" class="voltar" alt="voltar">
-                <img src="/ecommerce/frontend/assets/angle-left.png">
-            </a>
-        <h2>Carrinho</h2>
-    </section>
-    
-        <section class="carrinho-container">
-            <h2>Carrinho de Compras</h2>
-            <ul id="lista-carrinho">
-            </ul>
-            <button id="limpar-carrinho" class="botao-limpar">Limpar Carrinho</button>
-        </section>
-        <script src="/ecommerce/frontend/js/carrinho.js"></script>
-    </body>
-</html>
+const adicionarAoCarrinho = async (produto) => {
+    try {
+        const response = await fetch('http://localhost:8080/api/carrinho/adicionar', { // Atualização do endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(produto),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Produto adicionado:", data);
+            atualizarCarrinho(); 
+        } else {
+            const errorDetails = await response.text();
+            console.error('Erro ao adicionar ao carrinho:', response.statusText, errorDetails);
+        }
+    } catch (error) {
+        console.error('Erro ao adicionar ao carrinho:', error);
+    }
+};
+
+const atualizarCarrinho = async () => {
+    try {
+        const response = await fetch('http://localhost:8080/api/carrinho'); // Atualização do endpoint
+        if (response.ok) {
+            const produtos = await response.json();
+            listaCarrinho.innerHTML = ''; 
+            
+            produtos.forEach((produto) => {
+                const item = document.createElement('li');
+                item.innerText = `Produto: ${produto.nome} | Preço: R$ ${produto.preco.toFixed(2)} | Quantidade: ${produto.quantidade}`;
+                listaCarrinho.appendChild(item);
+            });
+        } else {
+            const errorDetails = await response.text();
+            console.error('Erro ao atualizar o carrinho:', response.statusText, errorDetails);
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar o carrinho:', error);
+    }
+};
+
+botaoLimpar.addEventListener('click', async () => {
+    try {
+        const response = await fetch('http://localhost:8080/api/carrinho/limpar', { method: 'DELETE' }); // Atualização do endpoint
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Carrinho limpo:", data.message);
+            atualizarCarrinho(); 
+        } else {
+            const errorDetails = await response.text();
+            console.error('Erro ao limpar o carrinho:', response.statusText, errorDetails);
+        }
+    } catch (error) {
+        console.error('Erro ao limpar o carrinho:', error);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', atualizarCarrinho);
+
+document.getElementById('comprar-botao').addEventListener('click', () => {
+    const produto = {
+        nome: document.getElementById('nome-produto').innerText,
+        preco: parseFloat(document.getElementById('preco-produto').innerText.replace('R$', '').trim()),
+        quantidade: parseInt(document.getElementById('quantidade-produto')?.value, 10) || 1,
+    };
+
+    if (produto.nome && !isNaN(produto.preco)) {
+        adicionarAoCarrinho(produto);
+    } else {
+        console.error('Dados do produto inválidos.');
+    }
+});
