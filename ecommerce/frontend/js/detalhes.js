@@ -46,7 +46,6 @@ const carregarDetalhesProduto = async () => {
         estoqueElemento.innerText = `Estoque: ${produto.qtdEstoque > 0 ? `${produto.qtdEstoque} unidades` : "Indisponível"}`;
         descricaoElemento.innerText = produto.descricaoDetalhada;
 
-        
         const isLoopEnabled = produtoImagens.length >= 3;
         new Swiper(".swiper-container", {
             loop: isLoopEnabled,
@@ -59,6 +58,35 @@ const carregarDetalhesProduto = async () => {
                 clickable: true,
             },
         });
+
+        document.getElementById("comprar-botao").addEventListener("click", async () => {
+            try {
+                const produtoCarrinho = {
+                    nome: produto.nome,
+                    preco: produto.valorProduto,
+                    quantidade: 1, 
+                };
+
+                const responseCarrinho = await fetch('http://localhost:8080/api/carrinho/adicionar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(produtoCarrinho),
+                });
+
+                if (!responseCarrinho.ok) {
+                    throw new Error(`Erro ao adicionar ao carrinho: ${responseCarrinho.status} ${responseCarrinho.statusText}`);
+                }
+
+                const data = await responseCarrinho.json();
+                console.log("Produto adicionado ao carrinho:", data);
+                alert(`Produto "${produtoCarrinho.nome}" adicionado ao carrinho com sucesso!`);
+            } catch (error) {
+                console.error("Erro ao adicionar produto ao carrinho:", error);
+                alert("Não foi possível adicionar o produto ao carrinho. Tente novamente!");
+            }
+        });
     } catch (error) {
         console.error("Erro ao carregar os detalhes do produto:", error);
         document.querySelector(".detalhes-produto").innerHTML = "<p>Erro ao carregar os detalhes do produto. Tente novamente mais tarde.</p>";
@@ -69,4 +97,3 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM carregado!");
     carregarDetalhesProduto();
 });
-

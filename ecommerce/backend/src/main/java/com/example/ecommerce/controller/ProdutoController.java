@@ -13,18 +13,59 @@ import java.util.List;
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
-    @Autowired
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
+
+    public ProdutoController(ProdutoService produtoService) {
+        this.produtoService = produtoService;
+    }
 
     @GetMapping
-    public List<Produto> listarProdutos() {
-        return produtoService.listarProdutos();
+    public ResponseEntity<List<Produto>> listarProdutos() {
+        try {
+            List<Produto> produtos = produtoService.listarProdutos();
+            return ResponseEntity.ok(produtos);
+        } catch (Exception e) {
+            System.err.println("Erro ao listar produtos: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/{codigo}")
-    public Produto buscarProdutoPorId(@PathVariable int codigo) {
-        return produtoService.buscarProdutoPorId(codigo);
+    public ResponseEntity<Produto> buscarProdutoPorCodigo(@PathVariable int codigo) {
+        Produto produto = produtoService.buscarPorCodigo(codigo);
+        if (produto != null) {
+            return ResponseEntity.ok(produto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Produto> adicionarProduto(@RequestBody Produto produto) {
+        Produto novoProduto = produtoService.adicionarProduto(produto);
+        return ResponseEntity.ok(novoProduto);
+    }
+
+    @PutMapping("/{codigo}")
+    public ResponseEntity<Produto> atualizarProduto(@PathVariable int codigo, @RequestBody Produto produtoAtualizado) {
+        Produto produto = produtoService.atualizarProduto(codigo, produtoAtualizado);
+        if (produto != null) {
+            return ResponseEntity.ok(produto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{codigo}")
+    public ResponseEntity<String> excluirProduto(@PathVariable int codigo) {
+        boolean excluido = produtoService.excluirProduto(codigo);
+        if (excluido) {
+            return ResponseEntity.ok("Produto excluído com sucesso!");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
+
 
 

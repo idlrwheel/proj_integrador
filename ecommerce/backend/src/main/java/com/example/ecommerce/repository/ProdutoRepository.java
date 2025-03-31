@@ -8,8 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
-public class ProdutoController {
-
+public class ProdutoRepository{
     @Autowired
     private ProdutoRepository produtoRepository;
 
@@ -18,6 +17,8 @@ public class ProdutoController {
         return produtoRepository.findAll();
     }
 }
+
+
 
 
 

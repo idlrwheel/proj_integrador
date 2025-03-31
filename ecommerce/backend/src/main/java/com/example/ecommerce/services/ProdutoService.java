@@ -10,14 +10,48 @@ import java.util.List;
 @Service
 public class ProdutoService {
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private final ProdutoRepository produtoRepository;
+
+    public ProdutoService(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     public List<Produto> listarProdutos() {
-        return produtoRepository.findAll(); 
+        return produtoRepository.findAll();
+
     }
 
-    public Produto buscarProdutoPorId(int codigo) {
-        return produtoRepository.findById(codigo).orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+    public Produto buscarPorCodigo(int codigo) {
+        return produtoRepository.findById(codigo).orElse(null);
     }
+
+    public Produto adicionarProduto(Produto produto) {
+        return produtoRepository.save(produto);
+    }
+
+    public Produto atualizarProduto(int codigo, Produto produtoAtualizado) {
+        Produto produto = buscarPorCodigo(codigo);
+        if (produto != null) {
+            produto.setNome(produtoAtualizado.getNome());
+            produto.setDescricaoDetalhada(produtoAtualizado.getDescricaoDetalhada());
+            produto.setValorProduto(produtoAtualizado.getValorProduto());
+            produto.setQtdEstoque(produtoAtualizado.getQtdEstoque());
+            produto.setAvaliacao(produtoAtualizado.getAvaliacao());
+            produto.setStatus(produtoAtualizado.getStatus());
+            return produtoRepository.save(produto);
+        }
+        return null;
+    }
+
+    public boolean excluirProduto(int codigo) {
+        Produto produto = buscarPorCodigo(codigo);
+        if (produto != null) {
+            produtoRepository.delete(produto);
+            return true;
+        }
+        return false;
+    }
+
 }
+
 

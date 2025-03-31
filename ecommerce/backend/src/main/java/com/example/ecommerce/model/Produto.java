@@ -7,15 +7,19 @@ import java.util.List;
 
 
 @Entity
+@Table(name = "produtos")
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigo;
 
     private String nome;
-    private BigDecimal avaliacao; 
+    private BigDecimal avaliacao;
+    @Column(name = "descricaoDetalhada")
     private String descricaoDetalhada;
-    private int qtdEstoque;
+    @Column(name = "qtdEstoque")
+    private Integer qtdEstoque;
+    @Column(name = "valorProduto")
     private BigDecimal valorProduto; 
 
     @Enumerated(EnumType.STRING)
@@ -56,12 +60,13 @@ public class Produto {
         this.descricaoDetalhada = descricaoDetalhada;
     }
 
-    public int getQtdEstoque() {
+    public Integer getQtdEstoque() {
         return qtdEstoque;
     }
 
-    public void setQtdEstoque(int qtdEstoque) {
-        this.qtdEstoque = qtdEstoque;
+    public void setQtdEstoque(Integer qtdEstoque) {
+        this.qtdEstoque = (qtdEstoque == null || qtdEstoque < 0) ? 0 : qtdEstoque;
+
     }
 
     public BigDecimal getValorProduto() {
@@ -90,4 +95,5 @@ public class Produto {
 
     
 }
+
 

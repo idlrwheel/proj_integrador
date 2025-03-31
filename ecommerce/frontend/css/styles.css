@@ -110,7 +110,7 @@ section.ofertas {
     background-color: #f8f8f8; 
     display: flex;
     align-items: center; 
-    gap: 35px; 
+    gap: 55px; 
     padding: 20px; 
     border-bottom: 2px solid #ddd; 
     justify-content: center;
@@ -244,7 +244,7 @@ section.detalhes {
     background-color: #f8f8f8; 
     display: flex;
     align-items: center; 
-    gap: 35px; 
+    gap: 50px; 
     padding: 20px; 
     border-bottom: 2px solid #ddd; 
     justify-content: center;
@@ -260,8 +260,10 @@ section.detalhes h2 {
 
 .voltar img {
     width: 32px; 
-    height: 32px; 
+    height: 30px; 
     cursor: pointer; 
+    display: block;
+    margin: 0;
 }
 
 .voltar:hover img {
