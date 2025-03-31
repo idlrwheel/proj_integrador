@@ -107,10 +107,13 @@ header .carrinho:hover {
 
 
 section.ofertas {
-    padding: 40px 20px;
     background-color: #f8f8f8; 
-    text-align: center;
-
+    display: flex;
+    align-items: center; 
+    gap: 35px; 
+    padding: 20px; 
+    border-bottom: 2px solid #ddd; 
+    justify-content: center;
 }
 
 section.ofertas h2 {
@@ -157,11 +160,7 @@ section.ofertas h2 {
     border-radius: 8px;
 }
 
-.voltar {
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-}
+
 
 .produtos {
     display: flex;
@@ -241,6 +240,45 @@ section.ofertas h2 {
     background-color: #34495e;
 }
 
+section.detalhes {
+    background-color: #f8f8f8; 
+    display: flex;
+    align-items: center; 
+    gap: 35px; 
+    padding: 20px; 
+    border-bottom: 2px solid #ddd; 
+    justify-content: center;
+}
+
+section.detalhes h2 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2c3e50; 
+    margin: 0; 
+
+}
+
+.voltar img {
+    width: 32px; 
+    height: 32px; 
+    cursor: pointer; 
+}
+
+.voltar:hover img {
+    transform: scale(1.1); 
+    transition: transform 0.2s ease; 
+}
+
+
+.detalhes h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #4CAF50; 
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
 
 
 .detalhes-produto {
