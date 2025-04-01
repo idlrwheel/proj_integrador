@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
-@CrossOrigin(origins = "http://127.0.0.1:5500") // Altere a origem conforme necessário
+@CrossOrigin("*") 
 public class ProdutoController {
 
     private final ProdutoService produtoService;
