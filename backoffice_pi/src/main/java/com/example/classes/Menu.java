@@ -1,5 +1,7 @@
+
 package com.example.classes;
 
+import com.example.dao.PedidoDAO;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +11,7 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 
 import com.example.dao.UsuarioDAO;
+import com.example.models.Pedido;
 import com.example.models.Usuario;
 
 public class Menu {
@@ -24,25 +27,32 @@ public class Menu {
             if (usuario.getGrupo().equals("adm")) {
                 System.out.println("2) Listar usuários");
             }
+            
+             if (usuario.getGrupo().equals("estoquista")) {
+                System.out.println("2) Listar pedidos");
+                System.out.println("3) Alterar status do pedido");
+            }
+
 
             System.out.println("0) Sair");
             System.out.print("Entre com a opção: ");
             opc = sc.nextInt();
             sc.nextLine();
 
-            if (opc == 1) {
+             if (opc == 1) {
                 MenuProduto.listarProdutos();
-            }
-
-            if (opc == 2 && usuario.getGrupo().equals("adm")) {
+            } else if (opc == 2 && usuario.getGrupo().equals("adm")) {
                 listarUsuarios(usuario);
-            }
-
-            if (opc == 0) {
+            } else if (opc == 2 && usuario.getGrupo().equals("estoquista")) {
+                listarPedidos();
+            } else if (opc == 3 && usuario.getGrupo().equals("estoquista")) {
+                alterarStatusPedido();
+            } else if (opc == 0) {
                 System.out.println("Saindo do sistema...");
             }
         }
     }
+
 
     public static void listarUsuarios(Usuario usuario) {
         List<Usuario> usuarios = UsuarioDAO.listarUsuarios();
@@ -92,9 +102,72 @@ public class Menu {
             case 1 -> alterarUsuario(usuarioEscolhido);
             case 2 -> alterarSenha(usuarioEscolhido);
             case 3 -> habilitarDesabilitar(usuarioEscolhido);
-            case 4 -> { /* volta para a lista de usuários */ }
+            case 4 -> { }
         }
     }
+    
+    public static void listarPedidos() {
+        PedidoDAO pedidoDAO = new PedidoDAO();
+        List<Pedido> pedidos = pedidoDAO.listarPedidos();
+
+        if (pedidos.isEmpty()) {
+            System.out.println("Nenhum pedido encontrado.");
+            return;
+        }
+
+        System.out.println("ID | Cliente | Número do Pedido | Total | Status");
+        for (Pedido pedido : pedidos) {
+            System.out.println(pedido.getId() + " | " + pedido.getClienteNome() + " | "   
+                    + pedido.getNumeroPedido() + " | " + pedido.getTotal() + " | " + pedido.getStatus());
+        }
+    }
+
+    public static void alterarStatusPedido() {
+        PedidoDAO pedidoDAO = new PedidoDAO();
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Digite o ID do pedido para alterar o status ou 0 para voltar: ");
+        int idPedido = sc.nextInt();
+        sc.nextLine(); 
+
+        if (idPedido == 0) return;
+
+        System.out.println("Escolha o novo status:");
+        System.out.println("""
+            1) Aguardando pagamento
+            2) Pagamento rejeitado
+            3) Pagamento com sucesso
+            4) Aguardando retirada
+            5) Em trânsito
+            6) Entregue
+        """);
+
+        int opcao = sc.nextInt();
+        sc.nextLine();
+
+        String novoStatus = switch (opcao) {
+            case 1 -> "aguardando pagamento";
+            case 2 -> "pagamento rejeitado";
+            case 3 -> "pagamento com sucesso";
+            case 4 -> "aguardando retirada";
+            case 5 -> "em transito";
+            case 6 -> "entregue";
+            default -> {
+                System.out.println("Opção inválida.");
+                yield null;
+            }
+        };
+
+        if (novoStatus != null) {
+            boolean atualizado = pedidoDAO.atualizarStatus(idPedido, novoStatus);
+            if (atualizado) {
+                System.out.println("Status atualizado com sucesso!");
+            } else {
+                System.out.println("Erro ao atualizar status.");
+            }
+        }
+    }
+
 
     public static void alterarUsuario(Usuario usuario) {
         Scanner sc = new Scanner(System.in);
